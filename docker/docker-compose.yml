@@ -4,7 +4,7 @@ services:
   airflow:
     build:
       context: ..
-      dockerfile: Dockerfile.airflow
+      dockerfile: docker/Dockerfile.airflow
     image: de_zoomcamp_airflow:local
     env_file:
       - ../.env
