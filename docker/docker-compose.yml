@@ -14,6 +14,7 @@ services:
       - ../airflow/dags:/opt/airflow/dags:ro
       - ../airflow/plugins:/opt/airflow/plugins:ro
       - ../scripts:/opt/airflow/scripts:ro
+    command: ["standalone"] 
     restart: unless-stopped
     depends_on:
       - dbt
