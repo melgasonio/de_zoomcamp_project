@@ -2,6 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
+from kagglehub import KaggleDatasetAdapter
 
 # Load environment variables
 load_dotenv()  # looks for .env in project root
@@ -17,9 +18,13 @@ PG_PORT = os.getenv("PG_PORT")
 engine = create_engine(f"postgresql+psycopg2://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}")
 
 # Load CSV
-df = pd.read_csv("data/raw/trips.csv")
+df = kagglehub.load_dataset(
+    KaggleDatasetAdapter.PANDAS,
+    "carrie1/ecommerce-data",  # dataset path
+    file_path="",              # leave empty for main CSV
+)
 
 # Write to Postgres table
-df.to_sql("raw_trips", engine, if_exists="replace", index=False)
+df.to_sql("raw_ecom", engine, if_exists="replace", index=False)
 
 print("CSV loaded into Postgres table: raw_trips")
