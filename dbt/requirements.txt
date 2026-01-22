@@ -1,0 +1,8 @@
+#base
+pandas
+
+#dev
+dbt-postgres
+
+#prod
+dbt-core
