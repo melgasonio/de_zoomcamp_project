@@ -11,4 +11,5 @@ dev = [
     "dbt-postgres>=1.10.0",
     "pandas>=3.0.0",
     "python-dotenv>=1.2.1",
+    "sqlalchemy>=2.0.46",
 ]
