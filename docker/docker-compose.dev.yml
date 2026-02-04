@@ -1,0 +1,81 @@
+services:
+  ingest:
+    volumes:
+    - ../data:/app/data
+    build:
+      context: ..
+      dockerfile: dbt/Dockerfile.ingest
+    image: de_zoomcamp_ingest:local
+    env_file:
+      - ../.env
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+    depends_on:
+      - postgres
+    networks:
+      - dev-network
+  
+  postgres:
+    image: postgres:15
+    env_file:
+      - ../.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - dev-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ../.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - dev-network
+
+  airflow:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.airflow
+    image: de_zoomcamp_airflow:local
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../airflow/dags:/opt/airflow/dags:ro
+      - ../airflow/plugins:/opt/airflow/plugins:ro
+      - ../scripts:/opt/airflow/scripts:ro
+    command: ["standalone"] 
+    restart: unless-stopped
+    depends_on:
+      - dbt
+
+  dbt:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dbt
+    image: de_zoomcamp_dbt:local
+    volumes:
+      - ../dbt:/usr/app:rw
+    working_dir: /usr/app
+    # keep container running so you can exec into it for interactive dbt work
+    command: ["bash", "-lc", "tail -f /dev/null"]
+    restart: "no"
+
+networks:
+  dev-network:
+    driver: bridge
+
+volumes:
+  pgdata:

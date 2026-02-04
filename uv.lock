@@ -307,6 +307,7 @@ dev = [
     { name = "dbt-postgres" },
     { name = "kagglehub" },
     { name = "pandas" },
+    { name = "psycopg2-binary" },
     { name = "python-dotenv" },
     { name = "sqlalchemy" },
 ]
@@ -318,6 +319,7 @@ dev = [
     { name = "dbt-postgres", specifier = ">=1.10.0" },
     { name = "kagglehub", specifier = ">=0.4.1" },
     { name = "pandas", specifier = ">=3.0.0" },
+    { name = "psycopg2-binary", specifier = ">=2.9.11" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "sqlalchemy", specifier = ">=2.0.46" },
 ]
