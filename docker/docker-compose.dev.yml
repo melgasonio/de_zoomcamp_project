@@ -13,6 +13,7 @@ services:
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
       PGDATABASE: ${POSTGRES_DB}
+    restart: unless-stopped
     depends_on:
       - postgres
     networks:
@@ -26,6 +27,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    restart: unless-stopped
     ports:
       - "5432:5432"
     volumes:
@@ -37,6 +39,7 @@ services:
     image: dpage/pgadmin4
     env_file:
       - ../.env
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
@@ -67,11 +70,17 @@ services:
       dockerfile: docker/Dockerfile.dbt
     image: de_zoomcamp_dbt:local
     volumes:
-      - ../dbt:/usr/app:rw
+      - ../dbt:/usr/app/dbt:rw
     working_dir: /usr/app
+    env_file:
+      - ../.env
+    environment:
+      DBT_PROFILES_DIR: dbt
     # keep container running so you can exec into it for interactive dbt work
     command: ["bash", "-lc", "tail -f /dev/null"]
-    restart: "no"
+    restart: unless-stopped
+    networks:
+      - dev-network
 
 networks:
   dev-network:
