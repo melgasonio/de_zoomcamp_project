@@ -71,11 +71,11 @@ services:
     image: de_zoomcamp_dbt:local
     volumes:
       - ../dbt:/usr/app/dbt:rw
-    working_dir: /usr/app
+    working_dir: /usr/app/dbt
     env_file:
       - ../.env
     environment:
-      DBT_PROFILES_DIR: dbt
+      DBT_PROFILES_DIR: .
     # keep container running so you can exec into it for interactive dbt work
     command: ["bash", "-lc", "tail -f /dev/null"]
     restart: unless-stopped
