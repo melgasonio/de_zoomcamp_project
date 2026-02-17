@@ -1,0 +1,16 @@
+with orders as (
+  select *
+  from {{ ref('stg_orders') }}
+)
+
+select
+  invoice_no,
+  stock_code,
+  description,
+  quantity,
+  unit_price,
+  customer_id,
+  country,
+  invoice_date,
+  (quantity * unit_price) as total_price
+from orders

@@ -21,6 +21,6 @@ csv_file = "data/raw/data.csv"
 df = pd.read_csv(csv_file, encoding="ISO-8859-1")
 
 # Write to Postgres table
-df.to_sql("raw_ecom", engine, if_exists="replace", index=False)
+df.to_sql("orders", engine, if_exists="replace", index=False)
 
-print("CSV loaded into Postgres table: raw_ecom")
+print("CSV loaded into Postgres table: orders")

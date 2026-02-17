@@ -1,0 +1,7 @@
+sources:
+  - name: raw
+    database: ecom
+    schema: public
+    tables:
+      - name: orders
+        quote_columns: true

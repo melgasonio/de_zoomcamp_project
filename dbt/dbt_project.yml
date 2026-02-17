@@ -1,0 +1,18 @@
+name: de_zoomcamp
+version: '1.0'
+config-version: 2
+
+profile: de_zoomcamp_profile
+
+model-paths: ["models"]
+target-path: "target"
+
+# Add folder-level materializations for models
+models:
+  de_zoomcamp:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: table
+    marts:
+      +materialized: incremental
