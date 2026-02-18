@@ -7,7 +7,6 @@ COPY airflow/requirements.txt /tmp/requirements.txt
 RUN if [ -f /tmp/requirements.txt ]; then su -s /bin/bash airflow -c 'pip install --no-cache-dir -r /tmp/requirements.txt'; fi
 
 COPY airflow/dags /opt/airflow/dags
-COPY airflow/plugins /opt/airflow/plugins
 COPY scripts /opt/airflow/scripts
 
 RUN chown -R airflow: /opt/airflow
