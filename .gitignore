@@ -1,0 +1,47 @@
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.ipc
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files (e.g., VS Code, PyCharm)
+.idea/
+.vscode/
+
+# Data files and directories (customize these paths as needed)
+data/raw/
+data/processed/
+data/interim/
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.json
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Credentials and Secrets
+.env
+.flaskenv
+keys/
+secrets.toml
+*.key
+*.pem
+*.enc
+
+# Logs and output
+*.log
+logs/
+test-results/
