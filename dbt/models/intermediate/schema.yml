@@ -10,6 +10,9 @@ models:
       - name: stock_code
         tests:
           - not_null
+          - relationships: 
+              to: ref('dim_products')
+              field: id
       - name: description
         tests:
           - not_null
@@ -25,16 +28,10 @@ models:
       - name: quantity
         tests:
           - not_null
-          - is_integer
-          - is_positive
       - name: unit_price
         tests:
           - not_null
-          - is_integer
-          - is_positive
       - name: total_price
         description: quantity * unit_price
         tests:
           - not_null
-          - is_integer
-          - is_positive

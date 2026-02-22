@@ -3,5 +3,5 @@ with cleaned_orders as (
   from {{ ref('int_orders_enriched') }}
 )
 
-select distinct stock_code, description
+select distinct stock_code as id, description
 from cleaned_orders

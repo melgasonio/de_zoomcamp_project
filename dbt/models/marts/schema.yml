@@ -2,9 +2,9 @@ version: 2
 
 models:
   - name: dim_products
-    descirption: Marts model describe product entity
+    description: Marts model describe product entity
     columns:
-      - name: stock_code
+      - name: id
         tests:
           - not_null
           - unique
