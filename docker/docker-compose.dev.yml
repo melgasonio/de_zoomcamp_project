@@ -9,10 +9,11 @@ services:
     env_file:
       - ../.env
     environment:
-      PGHOST: postgres
-      PGUSER: ${POSTGRES_USER}
-      PGPASSWORD: ${POSTGRES_PASSWORD}
-      PGDATABASE: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DBT: ${POSTGRES_DB}
+      POSTGRES_PORT: 5432
     restart: unless-stopped
     depends_on:
       - postgres
