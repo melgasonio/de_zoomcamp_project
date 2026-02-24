@@ -1,7 +1,7 @@
-with cleaned_orders as (
-  select *
-  from "ecom"."public"."int_orders_enriched"
+WITH cleaned_orders AS (
+  SELECT *
+  FROM "ecom"."public"."int_orders_enriched"
 )
 
-select *
-from cleaned_orders
+SELECT *
+FROM cleaned_orders

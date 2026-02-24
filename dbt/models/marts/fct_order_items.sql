@@ -1,7 +1,7 @@
-with cleaned_orders as (
-  select *
-  from {{ ref('int_orders_enriched') }}
+WITH cleaned_orders AS (
+  SELECT *
+  FROM {{ ref('int_orders_enriched') }}
 )
 
-select *
-from cleaned_orders
+SELECT *
+FROM cleaned_orders

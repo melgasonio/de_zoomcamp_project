@@ -1,9 +1,9 @@
-with orders as (
-  select *
-  from {{ ref('stg_orders') }}
+WITH orders AS (
+  SELECT *
+  FROM {{ ref('stg_orders') }}
 )
 
-select
+SELECT
   invoice_no,
   stock_code,
   description,
@@ -12,5 +12,5 @@ select
   customer_id,
   country,
   invoice_date,
-  (quantity * unit_price) as total_price
-from orders
+  (quantity * unit_price) AS total_price
+FROM orders
