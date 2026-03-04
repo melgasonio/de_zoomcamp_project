@@ -1,7 +1,7 @@
 sources:
   - name: raw
-    database: ecom
-    schema: public
+    database: "{{ 'de-zoomcamp-488912' if target.name == 'prod' else 'ecom' }}"
+    schema: "{{ 'de_zoomcamp' if target.name == 'prod' else 'public' }}"
     tables:
       - name: orders
-        quote_columns: true
+        identifier: "{{ 'raw_orders' if target.name == 'prod' else 'orders' }}"

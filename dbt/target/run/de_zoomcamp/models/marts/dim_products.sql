@@ -1,17 +1,18 @@
 
-      
   
     
 
-  create  table "ecom"."public"."dim_products__dbt_tmp"
-  
-  
-    as
-  
-  (
-    WITH cleaned_orders AS (
+    create or replace table `de-zoomcamp-488912`.`de_zoomcamp`.`dim_products`
+      
+    
+    
+
+    
+    OPTIONS()
+    as (
+      WITH cleaned_orders AS (
   SELECT *
-  FROM "ecom"."public"."int_orders_enriched"
+  FROM `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 )
 
 SELECT stock_code AS id, description
@@ -26,6 +27,5 @@ FROM (
 	FROM cleaned_orders
 ) AS helper_table
 WHERE row_number = 1
-  );
-  
+    );
   

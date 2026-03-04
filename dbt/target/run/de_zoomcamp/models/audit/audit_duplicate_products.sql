@@ -1,11 +1,10 @@
 
-  create view "ecom"."public"."audit_duplicate_products__dbt_tmp"
-    
-    
-  as (
-    with cleaned_orders as (
+
+  create or replace view `de-zoomcamp-488912`.`de_zoomcamp`.`audit_duplicate_products`
+  OPTIONS()
+  as with cleaned_orders as (
   select *
-  from "ecom"."public"."int_orders_enriched"
+  from `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 ),
 product_counts as (
   select stock_code as id, count(distinct description) as desc_count
@@ -16,5 +15,5 @@ product_counts as (
 select distinct c.*
 from cleaned_orders c
 inner join product_counts p on c.stock_code = p.id
-where p.desc_count > 1
-  );
+where p.desc_count > 1;
+

@@ -1,6 +1,6 @@
 WITH orders AS (
   SELECT *
-  FROM "ecom"."public"."stg_orders"
+  FROM `de-zoomcamp-488912`.`de_zoomcamp`.`stg_orders`
 )
 
 SELECT

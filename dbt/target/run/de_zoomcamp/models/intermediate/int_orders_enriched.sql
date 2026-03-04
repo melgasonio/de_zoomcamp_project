@@ -2,18 +2,20 @@
   
     
 
-  create  table "ecom"."public"."int_orders_enriched__dbt_tmp"
-  
-  
-    as
-  
-  (
-    with orders as (
-  select *
-  from "ecom"."public"."stg_orders"
+    create or replace table `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
+      
+    
+    
+
+    
+    OPTIONS()
+    as (
+      WITH orders AS (
+  SELECT *
+  FROM `de-zoomcamp-488912`.`de_zoomcamp`.`stg_orders`
 )
 
-select
+SELECT
   invoice_no,
   stock_code,
   description,
@@ -22,7 +24,7 @@ select
   customer_id,
   country,
   invoice_date,
-  (quantity * unit_price) as total_price
-from orders
-  );
+  (quantity * unit_price) AS total_price
+FROM orders
+    );
   

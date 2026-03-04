@@ -1,21 +1,21 @@
 
-      
   
     
 
-  create  table "ecom"."public"."fct_order_items"
-  
-  
-    as
-  
-  (
-    with cleaned_orders as (
-  select *
-  from "ecom"."public"."int_orders_enriched"
+    create or replace table `de-zoomcamp-488912`.`de_zoomcamp`.`fct_order_items`
+      
+    
+    
+
+    
+    OPTIONS()
+    as (
+      WITH cleaned_orders AS (
+  SELECT *
+  FROM `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 )
 
-select *
-from cleaned_orders
-  );
-  
+SELECT *
+FROM cleaned_orders
+    );
   

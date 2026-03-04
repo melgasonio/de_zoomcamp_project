@@ -1,6 +1,6 @@
 with cleaned_orders as (
   select *
-  from "ecom"."public"."int_orders_enriched"
+  from `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 ),
 product_counts as (
   select stock_code as id, count(distinct description) as desc_count

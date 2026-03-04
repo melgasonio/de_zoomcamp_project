@@ -1,6 +1,6 @@
 WITH cleaned_orders AS (
   SELECT *
-  FROM "ecom"."public"."int_orders_enriched"
+  FROM `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 )
 
 SELECT *

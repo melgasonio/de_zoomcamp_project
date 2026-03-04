@@ -9,4 +9,12 @@ de_zoomcamp_profile:
       dbname: "{{ env_var('POSTGRES_DB') }}"
       schema: "{{ env_var('DBT_SCHEMA', 'public') }}"
       threads: 1
+    prod:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: de_zoomcamp
+      keyfile: "{{ env_var('GCP_KEYFILE') }}"
+      threads: 4
+      location: us-central1
   target: dev

@@ -1,29 +1,28 @@
 
-  create view "ecom"."public"."stg_orders__dbt_tmp"
-    
-    
-  as (
-    with import_orders as (
-  select *
-  from "ecom"."public"."orders"
+
+  create or replace view `de-zoomcamp-488912`.`de_zoomcamp`.`stg_orders`
+  OPTIONS()
+  as WITH import_orders AS (
+  SELECT *
+  FROM `de-zoomcamp-488912`.`de_zoomcamp`.`raw_orders`
 ),
 
-cleaned_orders as (
-    select
-        trim("InvoiceNo")                                   as invoice_no,
-        trim("StockCode")                                   as stock_code,
-        nullif(trim("Description"), '')                     as description,
-        nullif(trim("Quantity"::text), '')::integer         as quantity,
-        nullif(trim("InvoiceDate"), '')::timestamp          as invoice_date,
-        nullif(trim("UnitPrice"::text), '')::numeric        as unit_price,
-        nullif(trim("CustomerID"::text), '')::integer       as customer_id,
-        trim("Country")                                     as country
-    from import_orders
-    where "InvoiceNo" is not null
-      and trim("InvoiceNo") <> ''
-      and trim("InvoiceNo") not ilike 'C%'  -- exclude cancellations                       
+cleaned_orders AS (
+    SELECT
+        TRIM(InvoiceNo)                                                     AS invoice_no,
+        TRIM(StockCode)                                                     AS stock_code,
+        NULLIF(TRIM(Description), '')                                       AS description,
+        CAST(NULLIF(TRIM(CAST(Quantity AS STRING)), '') AS INT64)           AS quantity,
+        PARSE_TIMESTAMP('%m/%d/%Y %H:%M', NULLIF(TRIM(InvoiceDate), ''))    AS invoice_date,
+        CAST(NULLIF(TRIM(CAST(UnitPrice AS STRING)), '') AS NUMERIC)        AS unit_price,
+        CAST(NULLIF(TRIM(CAST(CustomerID AS STRING)), '') AS INT64)         AS customer_id,
+        TRIM(Country)                                                       AS country
+    FROM import_orders
+    WHERE InvoiceNo IS NOT NULL
+      AND TRIM(InvoiceNo) <> ''
+      AND TRIM(InvoiceNo) NOT LIKE 'C%'
 )
 
-select *
-from cleaned_orders
-  );
+SELECT *
+FROM cleaned_orders;
+
