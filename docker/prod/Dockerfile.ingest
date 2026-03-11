@@ -5,6 +5,6 @@ WORKDIR /app
 COPY dbt/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY dbt/ingest.py .
+COPY dbt/ingest_bq.py .
 
-ENTRYPOINT ["python", "ingest.py"]
+ENTRYPOINT ["python", "ingest_bq.py"]

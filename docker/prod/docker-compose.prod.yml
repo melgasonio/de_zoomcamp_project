@@ -1,0 +1,92 @@
+services:
+  ingest:
+    volumes:
+    - ../../data:/app/data
+    - ../../sa_terraform_admin.json:/app/sa.json:ro
+    build:
+      context: ../..
+      dockerfile: docker/prod/Dockerfile.ingest
+    image: de_zoomcamp_ingest:prod
+    env_file:
+      - ../../.env
+    environment:
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+      GCP_KEYFILE: /app/sa.json
+    restart: unless-stopped
+    networks:
+      - dev-network
+
+  airflow:
+    build:
+      context: ../..
+      dockerfile: docker/prod/Dockerfile.airflow
+    image: de_zoomcamp_airflow:prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../../airflow/dags:/opt/airflow/dags:ro
+      - ../../airflow/plugins:/opt/airflow/plugins:ro
+      - ../../scripts:/opt/airflow/scripts:ro
+      - ../../dbt:/usr/app/dbt:rw
+      - ../../data:/usr/app/data:ro
+      - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
+    env_file:
+    - ../../.env
+    environment:
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+      GCP_KEYFILE: /usr/app/sa.json
+    command: ["standalone"] 
+    restart: unless-stopped
+    depends_on:
+      - dbt
+
+  dbt:
+    build:
+      context: ../..
+      dockerfile: docker/prod/Dockerfile.dbt
+    image: de_zoomcamp_dbt:prod
+    ports:
+      - "8083:8083"
+    volumes:
+      - ../../dbt:/usr/app/dbt:rw
+      - ../../data:/usr/app/data:ro
+      - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
+    working_dir: /usr/app/dbt
+    env_file:
+      - ../../.env
+    environment:
+      DBT_PROFILES_DIR: .
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID}   
+      GCP_KEYFILE: /usr/app/sa.json 
+    # keep container running so you can exec into it for interactive dbt work
+    command: ["bash", "-lc", "tail -f /dev/null"]
+    restart: unless-stopped
+    networks:
+      - dev-network
+
+  terraform:
+    build:
+      context: ../..
+      dockerfile: docker/prod/Dockerfile.terraform
+    image: de_zoomcamp_terraform:prod
+    working_dir: /workspace/terraform
+    volumes:
+      - ../../:/workspace
+      - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
+    env_file:
+      - ../../.env
+    environment:
+      - TF_VAR_project_id=${GCP_PROJECT_ID} 
+      - TF_VAR_region=${GCP_REGION}
+      - TF_VAR_credentials_path=/usr/app/sa.json
+    networks:
+      - dev-network
+    profiles:
+      - tools 
+
+networks:
+  dev-network:
+    driver: bridge
+
+volumes:
+  pgdata:

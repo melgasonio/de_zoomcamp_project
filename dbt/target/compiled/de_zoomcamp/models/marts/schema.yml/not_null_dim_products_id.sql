@@ -5,7 +5,7 @@
 
 
 select id
-from "ecom"."public"."dim_products"
+from `de-zoomcamp-488912`.`de_zoomcamp`.`dim_products`
 where id is null
 
 

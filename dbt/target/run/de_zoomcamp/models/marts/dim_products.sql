@@ -1,16 +1,13 @@
-
+-- back compat for old kwarg name
   
-    
-
-    create or replace table `de-zoomcamp-488912`.`de_zoomcamp`.`dim_products`
-      
-    
+  
+        
     
 
     
-    OPTIONS()
-    as (
-      WITH cleaned_orders AS (
+
+    merge into `de-zoomcamp-488912`.`de_zoomcamp`.`dim_products` as DBT_INTERNAL_DEST
+        using (WITH cleaned_orders AS (
   SELECT *
   FROM `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 )
@@ -27,5 +24,15 @@ FROM (
 	FROM cleaned_orders
 ) AS helper_table
 WHERE row_number = 1
-    );
-  
+        ) as DBT_INTERNAL_SOURCE
+        on (FALSE)
+
+    
+
+    when not matched then insert
+        (`id`, `description`)
+    values
+        (`id`, `description`)
+
+
+    

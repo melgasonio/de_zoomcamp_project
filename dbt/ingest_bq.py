@@ -3,7 +3,7 @@ from google.cloud import bigquery
 import os
 
 # Config
-PROJECT_ID = os.getenv("GCP_PROJECT_ID", "de-zoomcamp-488912")
+PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 DATASET_ID = "de_zoomcamp"
 TABLE_ID = "raw_orders"
 KEYFILE = os.getenv("GCP_KEYFILE")

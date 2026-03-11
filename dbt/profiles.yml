@@ -17,4 +17,4 @@ de_zoomcamp_profile:
       keyfile: "{{ env_var('GCP_KEYFILE') }}"
       threads: 4
       location: us-central1
-  target: dev
+  target: prod

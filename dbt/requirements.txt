@@ -1,14 +1,4 @@
-#base
 pandas
-
-#dev
-dbt-postgres
-python-dotenv
-sqlalchemy
-psycopg2-binary
-
-#prod
 dbt-core
 dbt-bigquery
-google-cloud-bigquery
 db-dtypes

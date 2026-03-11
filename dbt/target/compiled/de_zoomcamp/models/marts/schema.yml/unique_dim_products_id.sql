@@ -2,13 +2,20 @@
     
     
 
+with dbt_test__target as (
+
+  select id as unique_field
+  from `de-zoomcamp-488912`.`de_zoomcamp`.`dim_products`
+  where id is not null
+
+)
+
 select
-    id as unique_field,
+    unique_field,
     count(*) as n_records
 
-from "ecom"."public"."dim_products"
-where id is not null
-group by id
+from dbt_test__target
+group by unique_field
 having count(*) > 1
 
 

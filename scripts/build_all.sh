@@ -11,13 +11,13 @@ DOCKER_BUILD_OPTS=()
 if [[ "$NO_CACHE" -eq 1 ]]; then DOCKER_BUILD_OPTS+=(--no-cache); fi
 
 echo "Building Airflow image..."
-docker build "${DOCKER_BUILD_OPTS[@]}" -f docker/Dockerfile.airflow -t de_zoomcamp_airflow:local .
+docker build "${DOCKER_BUILD_OPTS[@]}" -f docker/prod/Dockerfile.airflow -t de_zoomcamp_airflow:local .
 
 echo "Building ingest image..."
-docker build "${DOCKER_BUILD_OPTS[@]}" -f dbt/Dockerfile.ingest -t de_zoomcamp_ingest:local .
+docker build "${DOCKER_BUILD_OPTS[@]}" -f dbt/prod/Dockerfile.ingest -t de_zoomcamp_ingest:local .
 
 echo "Building dbt image..."
-docker build "${DOCKER_BUILD_OPTS[@]}" -f docker/Dockerfile.dbt -t de_zoomcamp_dbt:local .
+docker build "${DOCKER_BUILD_OPTS[@]}" -f docker/prod/Dockerfile.dbt -t de_zoomcamp_dbt:local .
 
 echo "Builds finished. Listing images:"
 docker images --format "{{.Repository}}:{{.Tag}}\t{{.ID}}\t{{.Size}}" | grep de_zoomcamp || true

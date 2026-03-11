@@ -1,13 +1,13 @@
 services:
   ingest:
     volumes:
-    - ../data:/app/data
+    - ../../data:/app/data
     build:
       context: ..
-      dockerfile: dbt/Dockerfile.ingest
+      dockerfile: docker/dev/Dockerfile.ingest.dev
     image: de_zoomcamp_ingest:local
     env_file:
-      - ../.env.local
+      - .env.local
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -23,7 +23,7 @@ services:
   postgres:
     image: postgres:15
     env_file:
-      - ../.env.local
+      - .env.local
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -39,7 +39,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     env_file:
-      - ../.env.local
+      - .env.local
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
@@ -52,14 +52,17 @@ services:
   airflow:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.airflow
+      dockerfile: docker/dev/Dockerfile.airflow.dev
     image: de_zoomcamp_airflow:local
     ports:
       - "8080:8080"
     volumes:
-      - ../airflow/dags:/opt/airflow/dags:ro
-      - ../airflow/plugins:/opt/airflow/plugins:ro
-      - ../scripts:/opt/airflow/scripts:ro
+      - ../../airflow/dags:/opt/airflow/dags:ro
+      - ../../airflow/plugins:/opt/airflow/plugins:ro
+      - ../../scripts:/opt/airflow/scripts:ro
+      - ../../dbt:/usr/app/dbt:rw
+      - ../../data:/usr/app/data:ro
+      - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
     command: ["standalone"] 
     restart: unless-stopped
     depends_on:
@@ -68,45 +71,24 @@ services:
   dbt:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.dbt
+      dockerfile: docker/dev/Dockerfile.dbt.dev
     image: de_zoomcamp_dbt:local
     ports:
       - "8083:8083"
     volumes:
-      - ../dbt:/usr/app/dbt:rw
-      - ../data:/usr/app/data:ro
-      - ../sa_terraform_admin.json:/usr/app/sa.json:ro
+      - ../../dbt:/usr/app/dbt:rw
+      - ../../data:/usr/app/data:ro
+      - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
     working_dir: /usr/app/dbt
     env_file:
-      - ../.env
+      - .env.local
     environment:
       DBT_PROFILES_DIR: .
-      GCP_PROJECT_ID: ${PROJECT_ID}     
-      GCP_KEYFILE: /usr/app/sa.json  
     # keep container running so you can exec into it for interactive dbt work
     command: ["bash", "-lc", "tail -f /dev/null"]
     restart: unless-stopped
     networks:
       - dev-network
-
-  terraform:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.terraform
-    image: de_zoomcamp_terraform:local
-    working_dir: /workspace/terraform
-    volumes:
-      - ../:/workspace
-    env_file:
-      - ../.env
-    environment:
-      - TF_VAR_project_id=${PROJECT_ID}
-      - TF_VAR_region=${TF_VAR_REGION}
-      - TF_VAR_credentials_path=${SERVICE_ACCOUNT}
-    networks:
-      - dev-network
-    profiles:
-      - tools 
 
 networks:
   dev-network:

@@ -9,11 +9,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY dbt/requirements.txt /tmp/requirements.txt
-RUN if [ -f /tmp/requirements.txt ]; then \
-      pip install --no-cache-dir -r /tmp/requirements.txt; \
-    else \
-      pip install --no-cache-dir dbt-core; \
-    fi
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY dbt /usr/app
 

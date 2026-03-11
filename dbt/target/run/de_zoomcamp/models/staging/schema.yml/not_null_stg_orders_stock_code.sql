@@ -1,4 +1,5 @@
 
+    
     select
       count(*) as failures,
       count(*) != 0 as should_warn,
@@ -13,7 +14,7 @@
 
 
 select stock_code
-from "ecom"."public"."stg_orders"
+from `de-zoomcamp-488912`.`de_zoomcamp`.`stg_orders`
 where stock_code is null
 
 

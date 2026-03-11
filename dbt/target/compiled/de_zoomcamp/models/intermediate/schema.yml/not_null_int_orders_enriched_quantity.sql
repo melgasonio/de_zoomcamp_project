@@ -5,7 +5,7 @@
 
 
 select quantity
-from "ecom"."public"."int_orders_enriched"
+from `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 where quantity is null
 
 

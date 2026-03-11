@@ -1,4 +1,5 @@
 
+    
     select
       count(*) as failures,
       count(*) != 0 as should_warn,
@@ -13,7 +14,7 @@
 
 
 select invoice_date
-from "ecom"."public"."int_orders_enriched"
+from `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
 where invoice_date is null
 
 

@@ -1,4 +1,5 @@
 
+    
     select
       count(*) as failures,
       count(*) != 0 as should_warn,
@@ -12,13 +13,13 @@
 
 with child as (
     select stock_code as from_field
-    from "ecom"."public"."int_orders_enriched"
+    from `de-zoomcamp-488912`.`de_zoomcamp`.`int_orders_enriched`
     where stock_code is not null
 ),
 
 parent as (
     select id as to_field
-    from "ecom"."public"."dim_products"
+    from `de-zoomcamp-488912`.`de_zoomcamp`.`dim_products`
 )
 
 select
