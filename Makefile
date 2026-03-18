@@ -1,17 +1,18 @@
-local up:
+# --- LOCAL / DEV ENVIRONMENT ---
+local-up:
 	docker compose \
   	--env-file .env.local \
-  	-f docker/dev/docker-compose.dev.yml up -d
+  	-f docker/dev/docker-compose.dev.yml up -d --build
 
-local down:
+local-down:
 	docker compose \
-  	-f docker/dev/docker-compose.dev.yml down -v
+  	-f docker/dev/docker-compose.dev.yml down -v 
 
-prod up:
+prod-up:
 	docker compose \
   	--env-file .env \
-  	-f docker/prod/docker-compose.prod.yml up -d
+  	-f docker/prod/docker-compose.prod.yml up -d --build
 
-prod down:
+prod-down:
 	docker compose \
   	-f docker/prod/docker-compose.prod.yml down -v
