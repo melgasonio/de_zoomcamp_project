@@ -33,7 +33,7 @@ data/interim/
 .ipynb_checkpoints/
 
 # Credentials and Secrets
-.env
+.env*
 .flaskenv
 keys/
 secrets.toml
@@ -45,3 +45,11 @@ secrets.toml
 *.log
 logs/
 test-results/
+
+# Service account key
+sa_*
+
+# Terraform binary
+terraform/.terraform
+terraform/.terraform.lock.hcl
+terraform/.terraform.tfstate

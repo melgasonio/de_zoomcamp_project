@@ -1,0 +1,7 @@
+sources:
+  - name: raw
+    database: "{{ 'de-zoomcamp-488912' if target.name == 'prod' else 'ecom' }}"
+    schema: "{{ 'de_zoomcamp' if target.name == 'prod' else 'public' }}"
+    tables:
+      - name: orders
+        identifier: "{{ 'raw_orders' if target.name == 'prod' else 'orders' }}"

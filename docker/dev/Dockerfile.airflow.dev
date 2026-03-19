@@ -1,0 +1,16 @@
+FROM apache/airflow:2.7.1-python3.11
+
+USER root
+WORKDIR /opt/airflow
+
+COPY airflow/requirements.dev.txt /tmp/requirements.txt
+RUN if [ -f /tmp/requirements.txt ]; then su -s /bin/bash airflow -c 'pip install --no-cache-dir -r /tmp/requirements.txt'; fi
+
+COPY airflow/dags /opt/airflow/dags
+COPY scripts /opt/airflow/scripts
+
+RUN chown -R airflow: /opt/airflow
+
+USER airflow
+
+EXPOSE 8080

@@ -1,0 +1,4 @@
+pandas
+dbt-core
+dbt-bigquery
+db-dtypes

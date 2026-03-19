@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: Marts model describing product entity
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+      - name: description
+        tests:
+          - not_null
+
+  - name: fct_order_items
+    description: Marts model describing all enriched order transactions
+    columns:
+      - name: invoice_no
+      - name: stock_code
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: id
+      - name: description
+      - name: invoice_date
+      - name: customer_id
+      - name: unit_price
+      - name: country
+      - name: quantity
+      - name: country_id
+      - name: total_price
+        description: quantity * unit_price
+
+  - name: dim_countries
+    description: Marts model describing all unique countries found in the transactions
+    columns:
+      - name: country_id
+        tests:
+          - not_null
+      - name: country
