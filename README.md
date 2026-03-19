@@ -95,7 +95,14 @@ A batch-processed data pipeline that automates the extraction of CSV data, trans
 ```
 
 ## Setup Instructions
-*Note: Make sure to install Docker first. See installation instruction [here](https://docs.docker.com/engine/install/).*
+
+**Prequisites**
+1. Install Docker. See installation instruction [here](https://docs.docker.com/engine/install/).*
+2. Clone the Repository. Run:
+```
+git clone https://github.com/melgasonio/de_zoomcamp_project.git
+cd de_zoomcamp_project
+```
 
 **Local Setup**
 1. Create a `.env.local` file in the root with the following keys
