@@ -14,7 +14,7 @@ services:
       GCP_KEYFILE: /app/sa.json
     restart: unless-stopped
     networks:
-      - dev-network
+      - prod-network
 
   airflow:
     build:
@@ -24,7 +24,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ../../airflow/dags:/opt/airflow/dags:ro
+      - ../../airflow/dags:/opt/airflow/dags:rw
+      - ../../airflow/dags/.airflowignore:/opt/airflow/dags/.airflowignore:ro
       - ../../airflow/plugins:/opt/airflow/plugins:ro
       - ../../scripts:/opt/airflow/scripts:ro
       - ../../dbt:/usr/app/dbt:rw
@@ -35,10 +36,20 @@ services:
     environment:
       GCP_PROJECT_ID: ${GCP_PROJECT_ID}
       GCP_KEYFILE: /usr/app/sa.json
-    command: ["standalone"] 
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_USER}
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_PASS}
     restart: unless-stopped
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username ${AIRFLOW_USER} --password ${AIRFLOW_PASS} --firstname Admin --lastname User --role Admin --email admin@example.com || true &&
+      (airflow scheduler & airflow webserver)
+      "
     depends_on:
       - dbt
+    networks:
+      - prod-network
 
   dbt:
     build:
@@ -62,7 +73,7 @@ services:
     command: ["bash", "-lc", "tail -f /dev/null"]
     restart: unless-stopped
     networks:
-      - dev-network
+      - prod-network
 
   terraform:
     build:
@@ -79,13 +90,14 @@ services:
       - TF_VAR_project_id=${GCP_PROJECT_ID} 
       - TF_VAR_region=${GCP_REGION}
       - TF_VAR_credentials_path=/usr/app/sa.json
+      - TF_VAR_dataset=${GCP_DATASET_ID}
     networks:
-      - dev-network
+      - prod-network
     profiles:
       - tools 
 
 networks:
-  dev-network:
+  prod-network:
     driver: bridge
 
 volumes:

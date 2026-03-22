@@ -4,7 +4,7 @@ import os
 
 # Config
 PROJECT_ID = os.getenv("GCP_PROJECT_ID")
-DATASET_ID = "de_zoomcamp"
+DATASET_ID = os.getenv("GCP_DATASET_ID")
 TABLE_ID = "raw_orders"
 KEYFILE = os.getenv("GCP_KEYFILE")
 

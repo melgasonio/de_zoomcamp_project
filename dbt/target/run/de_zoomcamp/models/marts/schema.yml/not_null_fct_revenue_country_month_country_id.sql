@@ -13,9 +13,9 @@
 
 
 
-select customer_id
-from "ecom"."public"."int_orders_enriched"
-where customer_id is null
+select country_id
+from `de-zoomcamp-488912`.`de_zoomcamp`.`fct_revenue_country_month`
+where country_id is null
 
 
 

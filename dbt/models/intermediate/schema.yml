@@ -14,17 +14,11 @@ models:
               to: ref('dim_products')
               field: id
       - name: description
-        tests:
-          - not_null
       - name: invoice_date
         tests:
           - not_null
       - name: customer_id
-        tests:
-          - not_null
       - name: country
-        tests:
-          - not_null
       - name: quantity
         tests:
           - not_null

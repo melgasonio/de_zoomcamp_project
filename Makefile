@@ -16,3 +16,28 @@ prod-up:
 prod-down:
 	docker compose \
   	-f docker/prod/docker-compose.prod.yml down -v
+
+# --- TERRAFORM SETUP ---
+terraform-init:
+	docker compose \
+	--env-file .env \
+	-f docker/prod/docker-compose.prod.yml \
+	run --rm terraform init
+
+terraform-plan:
+	docker compose \
+	--env-file .env \
+	-f docker/prod/docker-compose.prod.yml \
+	run --rm terraform plan
+
+terraform-apply:
+	docker compose \
+	--env-file .env \
+	-f docker/prod/docker-compose.prod.yml \
+	run --rm terraform apply
+
+terraform-destroy:
+	docker compose \
+	--env-file .env \
+	-f docker/prod/docker-compose.prod.yml \
+	run --rm terraform destroy
