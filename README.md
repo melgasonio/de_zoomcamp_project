@@ -85,14 +85,26 @@ A batch-processed data pipeline that automates the extraction of CSV data, trans
 │   ├── dev/                           # Local docker-compose configuration
 │   └── prod/                          # Prod docker-compose configuration
 ├── looker/                            # Business Intelligence (BI) layer
-│   ├── README.md                      # Dashboard documentation
-│   └── image.png                      # Screenshot of final Looker dashboard
 ├── sa_terraform_admin.json            # GCP Credentials (ignored in git)
 └── terraform/                         # Infrastructure as Code (IaC)
-    ├── main.tf                        # Primary GCP infrastructure definition
-    ├── outputs.tf                     # Variables exported after deployment
-    └── variables.tf                   # Input variables for Terraform
 ```
+
+## Pipeline
+1. `ingest_to_bq` for `prod` or `ingest_to_bq` for `dev`: ingests data to Postgres or BQ depending on the target
+2. `run_dbt_models`: builds and materializes all dbt staging, intermediate, and marts models
+3. `run_dbt_tests`: executes dbt tests to validate data integrity across the pipeline
+
+## Data Layers
+![medallion architecture](data_layers.png)
+This project strictly follows the Medallion Architecture to guarantee data quality, enforce a clear separation of concerns, and optimize performance for downstream analytics.
+
+- **Source**: The pipeline begins with the raw e-commerce extraction (`data.csv`).
+- **Bronze Layer (Raw & Staging)**: The initial landing zone. The data is ingested into raw_orders and immediately standardized in the `stg_order`s` dbt model. This layer focuses on foundational data governance, such as correcting data types and standardizing column casing, without altering the grain of the source data.
+- **Silver Layer (Intermediate)**: The enrichment zone. In the `int_orders_enriched` model, raw data is cleansed and core business rules are applied. This includes filtering invalid records and deriving key business metrics (like calculating the `total_price` from `quantity` and `unit_price`) to create a single source of truth for downstream models.
+- **Gold Layer (Marts/Consumption)**: The business-ready zone. This layer is heavily modeled for analytical queries and BI dashboards, utilizing a Star Schema approach:
+    - `dim_countries`: A dimension table extracting all unique countries for categorical slicing.
+    - `fct_order_items`: A granular fact table joining the enriched orders with surrogate keys from the dimension tables.
+    - `fct_revenue_country_month`: A highly aggregated reporting table. This model is partitioned by country and month, making queries filtering for specific regional and temporal revenue significantly faster and more cost-effective.
 
 ## Setup Instructions
 
@@ -113,8 +125,11 @@ cd de_zoomcamp_project
 - `POSTGRES_PORT`: port to be forwarded, default is `5432`
 - `PGADMIN_EMAIL`: your preferred pgAdmin UI username
 - `PGADMIN_PASSWORD`: your preferred pgAdmin UI password
+- `AIRFLOW_USER`: your preferred airflow username
+- `AIRFLOW_PASS`: your preferred airflow password
 2. Run `make local-up` to start the local containers.
-3. Optional cleanup: run `make local-down`.
+3. Run a manual DAG trigger in Airflow UI or configure a schedule by setting the schedule arg of the DAG function to a CRON expression.
+4. Optional cleanup: run `make local-down`.
 
 **Cloud Setup**
 1. Create a GCP project.
@@ -124,6 +139,14 @@ cd de_zoomcamp_project
 - `GCP_KEYFILE`: the keyfile name including the file extension
 - `GCP_PROJECT_ID`: your GCP project ID
 - `GCP_REGION`: your GCP project's region
-5. Run `make prod-up` to deploy the cloud infrasture.
-6. Optional: run a manual DAG trigger in Airflow UI.
-6. Optional cleanup: run `make prod-down`.
+- `GCP_DATASET_ID`: your BigQuery dataset ID
+- `AIRFLOW_USER`: your preferred airflow username
+- `AIRFLOW_PASS`: your preferred airflow password
+5. Run `make prod-up` to start the prod containers.
+6. Run the following commands in order to create a BigQuery dataset resource:
+- `make terraform-init`: initializes the Terraform working directory
+- `make terraform-plan`: generates an execution plan
+- `make terraform-apply`: executes the plan and provisions the infrastructure
+- `make terraform-destroy` (*Optional*): safely removes the BigQuery dataset and any other resources managed by this configuration to prevent ongoing cloud costs
+7. Run a manual DAG trigger in Airflow UI or configure a schedule by setting the schedule arg of the DAG function to a CRON expression.
+8. Optional cleanup: run `make prod-down`.

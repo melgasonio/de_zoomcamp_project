@@ -5,7 +5,7 @@ provider "google" {
 }
 
 resource "google_bigquery_dataset" "main" {
-  dataset_id  = "de_zoomcamp"
+  dataset_id  = var.dataset
   location    = var.region
   description = "Dataset for DE Zoomcamp project"
 }

@@ -3,11 +3,11 @@ services:
     volumes:
     - ../../data:/app/data
     build:
-      context: ..
+      context: ../..
       dockerfile: docker/dev/Dockerfile.ingest.dev
     image: de_zoomcamp_ingest:local
     env_file:
-      - .env.local
+      - ../../.env.local
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -23,7 +23,7 @@ services:
   postgres:
     image: postgres:15
     env_file:
-      - .env.local
+      - ../../.env.local
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -39,7 +39,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     env_file:
-      - .env.local
+      - ../../.env.local
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
@@ -51,26 +51,40 @@ services:
 
   airflow:
     build:
-      context: ..
+      context: ../..
       dockerfile: docker/dev/Dockerfile.airflow.dev
     image: de_zoomcamp_airflow:local
+    env_file:
+      - ../../.env.local
+    environment:
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_USER}
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_PASS}
     ports:
       - "8080:8080"
     volumes:
-      - ../../airflow/dags:/opt/airflow/dags:ro
+      - ../../airflow/dags:/opt/airflow/dags:rw
+      - ../../airflow/dags/.airflowignore_dev:/opt/airflow/dags/.airflowignore:ro
       - ../../airflow/plugins:/opt/airflow/plugins:ro
       - ../../scripts:/opt/airflow/scripts:ro
       - ../../dbt:/usr/app/dbt:rw
       - ../../data:/usr/app/data:ro
       - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
-    command: ["standalone"] 
     restart: unless-stopped
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username ${AIRFLOW_USER} --password ${AIRFLOW_PASS} --firstname Admin --lastname User --role Admin --email admin@example.com || true &&
+      (airflow scheduler & airflow webserver)
+      "
     depends_on:
       - dbt
+    networks:
+      - dev-network
 
   dbt:
     build:
-      context: ..
+      context: ../..
       dockerfile: docker/dev/Dockerfile.dbt.dev
     image: de_zoomcamp_dbt:local
     ports:
@@ -81,7 +95,7 @@ services:
       - ../../sa_terraform_admin.json:/usr/app/sa.json:ro
     working_dir: /usr/app/dbt
     env_file:
-      - .env.local
+      - ../../.env.local
     environment:
       DBT_PROFILES_DIR: .
     # keep container running so you can exec into it for interactive dbt work

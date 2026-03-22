@@ -1,17 +1,6 @@
 version: 2
 
 models:
-  - name: dim_products
-    description: Marts model describing product entity
-    columns:
-      - name: id
-        tests:
-          - not_null
-          - unique
-      - name: description
-        tests:
-          - not_null
-
   - name: fct_order_items
     description: Marts model describing all enriched order transactions
     columns:
@@ -39,3 +28,15 @@ models:
         tests:
           - not_null
       - name: country
+
+  - name: fct_revenue_country_month
+    description: Marts model with aggregated revenue by country and month
+    columns:
+      - name: country_id
+        tests:
+          - not_null
+      - name: country
+      - name: month
+      - name: revenue
+        
+        

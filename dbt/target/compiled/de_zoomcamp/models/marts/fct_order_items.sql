@@ -18,7 +18,7 @@ SELECT
   cleaned_orders.customer_id,
   cleaned_orders.country,
   cleaned_orders.invoice_date,
-  countries.country_id,
+  countries.country_id
 FROM cleaned_orders
 LEFT JOIN countries
 ON cleaned_orders.country = countries.country

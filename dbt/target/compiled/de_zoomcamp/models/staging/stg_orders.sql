@@ -8,10 +8,15 @@ cleaned_orders AS (
         TRIM(InvoiceNo)                                                     AS invoice_no,
         TRIM(StockCode)                                                     AS stock_code,
         NULLIF(TRIM(Description), '')                                       AS description,
-        CAST(NULLIF(TRIM(CAST(Quantity AS STRING)), '') AS INT64)           AS quantity,
-        PARSE_TIMESTAMP('%m/%d/%Y %H:%M', NULLIF(TRIM(InvoiceDate), ''))    AS invoice_date,
-        CAST(NULLIF(TRIM(CAST(UnitPrice AS STRING)), '') AS NUMERIC)        AS unit_price,
-        CAST(NULLIF(TRIM(CAST(CustomerID AS STRING)), '') AS INT64)         AS customer_id,
+        CAST(NULLIF(TRIM(CAST(Quantity AS string)), '') AS bigint) AS quantity,
+        
+        
+            PARSE_TIMESTAMP('%m/%d/%Y %H:%M', NULLIF(TRIM(InvoiceDate), ''))
+                                                                 AS invoice_date,
+        
+
+        CAST(NULLIF(TRIM(CAST(UnitPrice AS string)), '') AS numeric) AS unit_price,
+        CAST(NULLIF(TRIM(CAST(CustomerID AS string)), '') AS bigint) AS customer_id,
         TRIM(Country)                                                       AS country
     FROM import_orders
     WHERE InvoiceNo IS NOT NULL
